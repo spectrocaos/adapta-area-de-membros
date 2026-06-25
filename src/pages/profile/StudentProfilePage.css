@@ -1,0 +1,262 @@
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  position: relative;
+}
+
+.profile-avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 80px; height: 80px;
+  border-radius: var(--radius-2xl);
+  background: var(--color-primary);
+  color: white;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-md);
+}
+
+.profile-avatar-img {
+  width: 80px; height: 80px;
+  border-radius: var(--radius-2xl);
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+  display: block;
+}
+
+.profile-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-edit-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border-strong);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-edit-profile:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+.profile-name { font-size: var(--text-2xl); font-weight: var(--weight-bold); line-height: 1.2; }
+.profile-email { color: var(--color-text-muted); margin-bottom: var(--space-2); }
+
+.profile-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+}
+
+/* ── Configurações ── */
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.settings-title { font-size: var(--text-xl); font-weight: var(--weight-bold); }
+.settings-subtitle { color: var(--color-text-muted); margin-top: -10px; }
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.setting-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+.setting-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.setting-icon { color: var(--color-primary); }
+.setting-header h3 { font-size: var(--text-base); font-weight: var(--weight-semibold); margin: 0; }
+.setting-hint { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 2px; }
+
+.setting-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.setting-btn {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-secondary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.setting-btn:hover { border-color: var(--color-primary); }
+
+.setting-btn.active {
+  background: var(--color-primary-subtle);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: var(--weight-bold);
+}
+
+/* ── Actions ── */
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.btn-logout {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: #fee2e2;
+  color: #dc2626;
+  border: none; border-radius: var(--radius-md);
+  font-weight: var(--weight-semibold);
+  cursor: pointer; transition: background 0.2s;
+}
+
+.btn-logout:hover { background: #fecaca; }
+
+@media (max-width: 640px) {
+  .profile-header { flex-direction: column; text-align: center; }
+  .setting-options { flex-direction: column; }
+  .setting-btn { width: 100%; text-align: center; }
+}
+
+/* ── Modal Editar Perfil ── */
+.edit-profile-modal {
+  max-width: 440px;
+}
+
+.edit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.edit-modal-header .modal-title {
+  margin-bottom: 0;
+}
+
+.edit-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.edit-avatar-preview {
+  position: relative;
+  width: 96px;
+  height: 96px;
+}
+
+.edit-avatar-img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 3px solid var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.edit-avatar-initials {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.edit-avatar-camera-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: 2px solid var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition-fast);
+}
+
+.edit-avatar-camera-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.edit-avatar-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}

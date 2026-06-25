@@ -1,0 +1,185 @@
+/* ============================================================
+   ADAPTA — Design System Tokens
+   Frase 2 / Fase 0: Paleta acessível + Tipografia
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ── Brand / Primária (PaperFlow) ─────────────────────── */
+  --color-primary:        #298517;
+  --color-primary-light:  #34a71d;
+  --color-primary-dark:   #1d5e10;
+  --color-primary-subtle: #e9f7e6;
+  --color-accent:         #80ff91;
+
+  /* ── Condições Neurodivergentes ───────────────────────── */
+  --color-tea:            hsl(195, 65%, 42%);
+  --color-tea-light:      hsl(195, 65%, 92%);
+  --color-tea-dark:       hsl(195, 65%, 28%);
+
+  --color-dyslexia:       hsl(35, 88%, 48%);
+  --color-dyslexia-light: hsl(35, 88%, 93%);
+  --color-dyslexia-dark:  hsl(35, 88%, 32%);
+
+  --color-adhd:           hsl(280, 60%, 52%);
+  --color-adhd-light:     hsl(280, 60%, 93%);
+  --color-adhd-dark:      hsl(280, 60%, 36%);
+
+  --color-color-blind:    hsl(210, 18%, 38%);
+  --color-color-blind-light: hsl(210, 18%, 92%);
+  --color-color-blind-dark:  hsl(210, 18%, 22%);
+
+  /* ── Neutros ──────────────────────────────────────────── */
+  --color-gray-50:   hsl(220, 20%, 98%);
+  --color-gray-100:  hsl(220, 18%, 94%);
+  --color-gray-200:  hsl(220, 16%, 88%);
+  --color-gray-300:  hsl(220, 14%, 76%);
+  --color-gray-400:  hsl(220, 12%, 60%);
+  --color-gray-500:  hsl(220, 10%, 46%);
+  --color-gray-600:  hsl(220, 10%, 34%);
+  --color-gray-700:  hsl(220, 12%, 24%);
+  --color-gray-800:  hsl(220, 14%, 16%);
+  --color-gray-900:  hsl(220, 16%, 10%);
+
+  /* ── Semânticas ───────────────────────────────────────── */
+  --color-success:  hsl(142, 68%, 38%);
+  --color-success-light: hsl(142, 68%, 93%);
+  --color-warning:  hsl(38, 92%, 48%);
+  --color-warning-light: hsl(38, 92%, 93%);
+  --color-error:    hsl(0, 70%, 52%);
+  --color-error-light:   hsl(0, 70%, 94%);
+  --color-info:     hsl(200, 80%, 48%);
+  --color-info-light:    hsl(200, 80%, 93%);
+
+  /* ── Superfície / Fundo (PaperFlow) ───────────────────── */
+  --color-bg:           #FDFBF7;
+  --color-bg-secondary: #FDFBF7;
+  --color-surface:      #F7F4EB;
+  --color-surface-2:    #F7F4EB;
+  --color-border:       #E5E7EB;
+  --color-border-strong: #D1D5DB;
+
+  /* ── Texto (PaperFlow) ────────────────────────────────── */
+  --color-text:         #111827;
+  --color-text-muted:   #4B5563;
+  --color-text-subtle:  #9CA3AF;
+  --color-text-inverse: #FFFFFF;
+
+  /* ── Sidebar (PaperFlow Glass) ────────────────────────── */
+  --color-sidebar-bg:   rgba(255, 255, 255, 0.4);
+  --color-sidebar-item: rgba(255, 255, 255, 0.6);
+  --color-sidebar-hover: rgba(0, 0, 0, 0.04);
+  --color-sidebar-text: #4B5563; /* text-muted */
+  --color-sidebar-text-active: #111827; /* text-primary */
+
+  /* ── Tipografia (PaperFlow) ───────────────────────────── */
+  --font-sans:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-md:   1.125rem;  /* 18px */
+  --text-lg:   1.25rem;   /* 20px */
+  --text-xl:   1.5rem;    /* 24px */
+  --text-2xl:  1.875rem;  /* 30px */
+  --text-3xl:  2.25rem;   /* 36px */
+  --text-4xl:  3rem;      /* 48px */
+
+  --weight-light:   300;
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold: 600;
+  --weight-bold:    700;
+
+  --leading-tight:  1.2;
+  --leading-snug:   1.4;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+  --leading-loose:  2;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+
+  /* ── Espaçamento ──────────────────────────────────────── */
+  --space-1:  0.25rem;   /* 4px  */
+  --space-2:  0.5rem;    /* 8px  */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+
+  /* ── Bordas (PaperFlow) ───────────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   8px;   /* control */
+  --radius-lg:   12px;
+  --radius-xl:   16px;  /* card */
+  --radius-2xl:  24px;
+  --radius-full: 9999px; /* pill */
+
+  /* ── Sombras ──────────────────────────────────────────── */
+  --shadow-xs:  0 1px 3px hsl(220 30% 10% / 0.06);
+  --shadow-sm:  0 2px 8px hsl(220 30% 10% / 0.08);
+  --shadow-md:  0 4px 16px hsl(220 30% 10% / 0.10);
+  --shadow-lg:  0 8px 32px hsl(220 30% 10% / 0.12);
+  --shadow-xl:  0 16px 48px hsl(220 30% 10% / 0.16);
+
+  /* ── Transições ───────────────────────────────────────── */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+  --transition-fluid:  400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Layout ───────────────────────────────────────────── */
+  --sidebar-width-expanded: 256px;
+  --sidebar-width-collapsed: 80px;
+  --sidebar-width: var(--sidebar-width-expanded);
+  --topbar-height: 64px;
+  --content-max-width: 1100px;
+
+  /* ── Z-index ──────────────────────────────────────────── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-dropdown: 100;
+  --z-sticky:  200;
+  --z-overlay: 300;
+  --z-modal:   400;
+  --z-toast:   500;
+}
+
+/* ── Modo Escuro ──────────────────────────────────────────── */
+[data-theme="dark"] {
+  --color-bg:           hsl(222, 25%, 10%);
+  --color-bg-secondary: hsl(222, 25%, 13%);
+  --color-surface:      hsl(222, 25%, 16%);
+  --color-surface-2:    hsl(222, 25%, 19%);
+  --color-border:       hsl(222, 20%, 24%);
+  --color-border-strong: hsl(222, 16%, 32%);
+  --color-text:         hsl(220, 20%, 92%);
+  --color-text-muted:   hsl(220, 12%, 62%);
+  --color-text-subtle:  hsl(220, 8%, 44%);
+  --color-primary-subtle: hsl(220, 80%, 16%);
+  --color-tea-light:      hsl(195, 40%, 18%);
+  --color-dyslexia-light: hsl(35, 60%, 18%);
+  --color-adhd-light:     hsl(280, 40%, 18%);
+  --color-color-blind-light: hsl(210, 18%, 18%);
+}
+
+/* ── Modo Baixa Estimulação ───────────────────────────────── */
+[data-low-stimulation="true"] {
+  --color-primary:        hsl(220, 30%, 48%);
+  --color-tea:            hsl(195, 25%, 38%);
+  --color-dyslexia:       hsl(35, 30%, 44%);
+  --color-adhd:           hsl(280, 20%, 46%);
+  --transition-fast:      0ms;
+  --transition-normal:    0ms;
+  --transition-slow:      0ms;
+}

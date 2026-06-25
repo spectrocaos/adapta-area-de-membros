@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id               String            @id @default(uuid())
+  name             String
+  email            String            @unique
+  passwordHash     String            @map("password_hash")
+  profile          ProfileType
+  photoUrl         String?
+  condition        ConditionType?
+  onboarded        Boolean           @default(false)
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  materialsCreated Material[]        @relation("CreatedMaterials")
+  classesTeaching  Class[]           @relation("TeacherClasses")
+
+  classesEnrolled  ClassStudent[]
+  studentMaterials StudentMaterial[]
+
+  @@map("users")
+}
+
+model Material {
+  id               String            @id @default(uuid())
+  title            String
+  content          String            @db.Text
+  originalType     String
+  adaptType        String
+  fileType         String
+  subject          String
+  condition        ConditionType
+  createdBy        String            @map("created_by")
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  author           User              @relation("CreatedMaterials", fields: [createdBy], references: [id])
+
+  classMaterials   ClassMaterial[]
+  studentMaterials StudentMaterial[]
+
+  @@map("materials")
+}
+
+model Class {
+  id               String            @id @default(uuid())
+  name             String
+  grade            String
+  code             String            @unique
+  teacherId        String            @map("teacher_id")
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  teacher          User              @relation("TeacherClasses", fields: [teacherId], references: [id])
+
+  classStudents    ClassStudent[]
+  classMaterials   ClassMaterial[]
+  studentMaterials StudentMaterial[] 
+
+  @@map("classes")
+}
+
+model ClassStudent {
+  classId          String            @map("class_id")
+  studentId        String            @map("student_id")
+
+  class            Class             @relation(fields: [classId], references: [id])
+  student          User              @relation(fields: [studentId], references: [id])
+
+  @@id([classId, studentId])
+  @@map("class_students")
+}
+
+model ClassMaterial {
+  classId          String            @map("class_id")
+  materialId       String            @map("material_id")
+
+  class            Class             @relation(fields: [classId], references: [id])
+  material         Material          @relation(fields: [materialId], references: [id])
+
+  @@id([classId, materialId])
+  @@map("class_materials")
+}
+
+model StudentMaterial {
+  studentId        String            @map("student_id")
+  materialId       String            @map("material_id")
+  classId          String?           @map("class_id")
+
+  student          User              @relation(fields: [studentId], references: [id])
+  material         Material          @relation(fields: [materialId], references: [id])
+  class            Class?            @relation(fields: [classId], references: [id])
+
+  @@id([studentId, materialId])
+  @@map("student_materials")
+}
+
+enum ProfileType {
+  teacher
+  student
+}
+
+enum ConditionType {
+  tea
+  dyslexia
+  adhd
+  color_blind
+}
