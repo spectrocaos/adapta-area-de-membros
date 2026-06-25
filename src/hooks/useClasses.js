@@ -92,13 +92,13 @@ export function useClasses() {
     }
 
     try {
-      const response = await fetch('/api/classes/addStudent', {
+      const response = await fetch('/api/classes/actions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ classId, studentId })
+        body: JSON.stringify({ action: 'addStudent', classId, studentId })
       })
       if (response.ok) {
         window.dispatchEvent(new Event('adapta_classes_changed'))
@@ -113,13 +113,13 @@ export function useClasses() {
     if (!token) return
 
     try {
-      const response = await fetch('/api/classes/removeStudent', {
+      const response = await fetch('/api/classes/actions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ classId, studentId })
+        body: JSON.stringify({ action: 'removeStudent', classId, studentId })
       })
       if (response.ok) {
         window.dispatchEvent(new Event('adapta_classes_changed'))
@@ -135,10 +135,10 @@ export function useClasses() {
     const token = localStorage.getItem('adapta_token')
     if (!token) return
     try {
-      const response = await fetch('/api/classes/shareMaterial', {
+      const response = await fetch('/api/classes/actions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ classId, materialId })
+        body: JSON.stringify({ action: 'shareMaterial', classId, materialId })
       })
       if (response.ok) window.dispatchEvent(new Event('adapta_classes_changed'))
     } catch (error) { console.error(error) }
@@ -148,10 +148,10 @@ export function useClasses() {
     const token = localStorage.getItem('adapta_token')
     if (!token) return
     try {
-      const response = await fetch('/api/classes/unshareMaterial', {
+      const response = await fetch('/api/classes/actions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ classId, materialId })
+        body: JSON.stringify({ action: 'unshareMaterial', classId, materialId })
       })
       if (response.ok) window.dispatchEvent(new Event('adapta_classes_changed'))
     } catch (error) { console.error(error) }
@@ -161,10 +161,10 @@ export function useClasses() {
     const token = localStorage.getItem('adapta_token')
     if (!token) return
     try {
-      const response = await fetch('/api/classes/shareStudentMaterial', {
+      const response = await fetch('/api/classes/actions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ classId, studentId, materialId })
+        body: JSON.stringify({ action: 'shareStudentMaterial', classId, studentId, materialId })
       })
       if (response.ok) window.dispatchEvent(new Event('adapta_classes_changed'))
     } catch (error) { console.error(error) }
@@ -174,10 +174,10 @@ export function useClasses() {
     const token = localStorage.getItem('adapta_token')
     if (!token) return
     try {
-      const response = await fetch('/api/classes/unshareStudentMaterial', {
+      const response = await fetch('/api/classes/actions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ classId, studentId, materialId })
+        body: JSON.stringify({ action: 'unshareStudentMaterial', classId, studentId, materialId })
       })
       if (response.ok) window.dispatchEvent(new Event('adapta_classes_changed'))
     } catch (error) { console.error(error) }
