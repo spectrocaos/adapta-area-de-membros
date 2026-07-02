@@ -1,7 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../../hooks/useAuth'
-import { useClasses } from '../../hooks/useClasses'
-import { useLibrary } from '../../hooks/useLibrary'
 import ReactMarkdown from 'react-markdown'
 import {
   GraduationCap, FileText, ArrowLeft, BookOpen,
@@ -9,34 +7,68 @@ import {
 } from 'lucide-react'
 import './StudentPagesShared.css'
 
-// Mock data — professores que compartilharam materiais com este aluno
-// Em produção viria de uma API/backend; aqui lemos do hook de classes simulado.
-const MOCK_TEACHERS = [
-  {
-    id: 'teacher-1',
-    name: 'Prof. Ana Oliveira',
-    email: 'ana@escola.edu.br',
-    subject: 'Matemática',
-    avatarColor: 'var(--color-tea)',
-  },
-  {
-    id: 'teacher-2',
-    name: 'Prof. Carlos Lima',
-    email: 'carlos@escola.edu.br',
-    subject: 'Português',
-    avatarColor: 'var(--color-adhd)',
-  },
-]
+function getRandomAvatarColor(name) {
+  const colors = ['var(--color-tea)', 'var(--color-adhd)', 'var(--color-dyslexia)', 'var(--color-color-blind)', 'var(--color-primary)']
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const index = Math.abs(hash % colors.length)
+  return colors[index]
+}
 
 export default function MyTeachersPage() {
   const { user } = useAuth()
-  const { materials } = useLibrary()
+  const [teachers, setTeachers] = useState([])
+  const [myMaterials, setMyMaterials] = useState([])
+  const [loading, setLoading] = useState(true)
 
   const [selectedTeacher, setSelectedTeacher] = useState(null)
   const [selectedMaterial, setSelectedMaterial] = useState(null)
 
-  // Filtra materiais por condição do aluno (simula materiais enviados pelo professor)
-  const myMaterials = materials.filter(m => m.condition === user?.condition)
+  useEffect(() => {
+    async function loadTeachersAndMaterials() {
+      setLoading(true)
+      const token = localStorage.getItem('adapta_token')
+      try {
+        // 1. Carregar turmas do aluno para extrair os professores
+        const classRes = await fetch('/api/classes', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        if (classRes.ok) {
+          const classesData = await classRes.json()
+          const teacherMap = {}
+          classesData.forEach(c => {
+            if (c.teacher) {
+              teacherMap[c.teacher.id] = {
+                id: c.teacher.id,
+                name: c.teacher.name,
+                email: c.teacher.email,
+                subject: c.grade || 'Professor',
+                avatarColor: getRandomAvatarColor(c.teacher.name)
+              }
+            }
+          })
+          setTeachers(Object.values(teacherMap))
+        }
+
+        // 2. Carregar materiais compartilhados com o aluno
+        const matRes = await fetch('/api/student/materials', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        if (matRes.ok) {
+          const materialsData = await matRes.json()
+          setMyMaterials(materialsData)
+        }
+      } catch (err) {
+        console.error('Erro ao buscar dados do aluno:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadTeachersAndMaterials()
+  }, [])
 
   // ── Leitura de material ────────────────────────────────────
   if (selectedMaterial) {
@@ -59,7 +91,7 @@ export default function MyTeachersPage() {
 
   // ── Detalhes do professor ──────────────────────────────────
   if (selectedTeacher) {
-    const teacherMaterials = myMaterials // Em produção: filtrar por teacherId
+    const teacherMaterials = myMaterials.filter(m => m.createdBy === selectedTeacher.id)
     return (
       <div className="student-sub-page animate-fade-in">
         <button className="btn-back-link" onClick={() => setSelectedTeacher(null)}>
@@ -84,7 +116,7 @@ export default function MyTeachersPage() {
           </div>
         </div>
 
-        <h2 className="section-label">Materiais Enviados por {selectedTeacher.name.split(' ')[1]}</h2>
+        <h2 className="section-label">Materiais Enviados por {selectedTeacher.name.split(' ')[1] || selectedTeacher.name}</h2>
 
         {teacherMaterials.length > 0 ? (
           <div className="smaterials-grid">
@@ -117,6 +149,16 @@ export default function MyTeachersPage() {
     )
   }
 
+  // ── Carregando ─────────────────────────────────────────────
+  if (loading) {
+    return (
+      <div className="student-sub-page animate-fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
+        <span className="spinner" style={{ borderColor: 'var(--color-primary-subtle)', borderTopColor: 'var(--color-primary)', width: '32px', height: '32px' }} />
+        <p style={{ marginTop: 'var(--space-4)', color: 'var(--color-text-muted)' }}>Buscando professores e turmas...</p>
+      </div>
+    )
+  }
+
   // ── Lista de professores ───────────────────────────────────
   return (
     <div className="student-sub-page animate-fade-in">
@@ -130,8 +172,8 @@ export default function MyTeachersPage() {
       </div>
 
       <div className="teachers-list">
-        {MOCK_TEACHERS.map(teacher => {
-          const count = myMaterials.length // Em produção: filtrar por teacher
+        {teachers.map(teacher => {
+          const count = myMaterials.filter(m => m.createdBy === teacher.id).length
           return (
             <button
               key={teacher.id}
@@ -162,7 +204,7 @@ export default function MyTeachersPage() {
         })}
       </div>
 
-      {MOCK_TEACHERS.length === 0 && (
+      {teachers.length === 0 && (
         <div className="empty-state">
           <User size={48} />
           <h2>Nenhum professor encontrado</h2>
