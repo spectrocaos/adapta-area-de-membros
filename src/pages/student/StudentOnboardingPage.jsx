@@ -50,6 +50,8 @@ export default function StudentOnboardingPage() {
   const navigate = useNavigate()
 
   const [currentStep, setCurrentStep] = useState(0)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const [answers, setAnswers] = useState({
     condition: user?.condition || 'none',
     dyslexicFont: false,
@@ -106,6 +108,8 @@ export default function StudentOnboardingPage() {
   }
 
   const handleFinish = async () => {
+    setError('')
+    setLoading(true)
     // 1. Atualizar preferências visuais/de sistema no hook
     updateMultiplePreferences({
       theme: answers.colorFilter === 'high-contrast' ? 'high-contrast' : 'light',
@@ -116,13 +120,19 @@ export default function StudentOnboardingPage() {
     })
 
     // 2. Salvar estado de onboarded do aluno e aguardar a conclusão
-    await updateUser({
+    const result = await updateUser({
       condition: answers.condition !== 'none' ? answers.condition : null,
       onboarded: true
     })
 
-    // 3. Redirecionar para o dashboard
-    navigate('/dashboard')
+    setLoading(false)
+
+    if (result && result.success) {
+      // 3. Redirecionar para o dashboard
+      navigate('/dashboard')
+    } else {
+      setError(result?.error || 'Erro ao salvar configurações de onboarding.')
+    }
   }
 
   return (
@@ -309,13 +319,19 @@ export default function StudentOnboardingPage() {
           )}
         </div>
 
+        {error && (
+          <div className="form-error" role="alert" style={{ margin: 'var(--space-4) var(--space-8) 0 var(--space-8)' }}>
+            <AlertCircle size={14} /><span>{error}</span>
+          </div>
+        )}
+
         {/* Footer Navigation */}
         <div className="onboarding-footer">
           <button
             type="button"
             className="onboarding-btn-secondary"
             onClick={handleBack}
-            disabled={currentStep === 0}
+            disabled={currentStep === 0 || loading}
           >
             <ChevronLeft size={16} /> Voltar
           </button>
@@ -324,8 +340,11 @@ export default function StudentOnboardingPage() {
             type="button"
             className="onboarding-btn-primary"
             onClick={handleNext}
+            disabled={loading}
           >
-            {currentStep === STEPS.length - 1 ? (
+            {loading ? (
+              <span className="spinner" />
+            ) : currentStep === STEPS.length - 1 ? (
               <>Concluir <Sparkles size={16} style={{ marginLeft: 'var(--space-2)' }} /></>
             ) : (
               <>Avançar <ChevronRight size={16} /></>

@@ -154,7 +154,7 @@ export function AuthProvider({ children }) {
   }
 
   async function updateUser(updates) {
-    if (!user?.id) return
+    if (!user?.id) return { success: false, error: 'Usuário não identificado.' }
     
     const token = localStorage.getItem('adapta_token')
     
@@ -173,11 +173,14 @@ export function AuthProvider({ children }) {
       if (response.ok) {
         localStorage.setItem('adapta_user', JSON.stringify(data.user))
         setUser(data.user)
+        return { success: true, user: data.user }
       } else {
         console.error('Erro ao atualizar usuário:', data.message)
+        return { success: false, error: data.message || 'Erro ao atualizar usuário.' }
       }
     } catch (error) {
       console.error('Erro de conexão ao atualizar usuário:', error)
+      return { success: false, error: 'Erro de conexão com o servidor.' }
     }
   }
 
