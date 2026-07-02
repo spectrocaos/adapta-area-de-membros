@@ -1,6 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { X, Send, Search, MessageSquare, CheckCircle2, User, Brain, BookOpen, Zap, Eye, Heart, Users, Mail } from 'lucide-react'
-import { useClasses } from '../../hooks/useClasses'
 import './ShareModal.css'
 
 const CONDITION_INFO = {
@@ -20,22 +19,43 @@ export default function ShareModal({ isOpen, onClose, materialName }) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
-  const { classes } = useClasses()
-  
-  const allStudents = useMemo(() => {
-    return (classes || []).flatMap(c => 
-      (c.students || []).map(s => ({ ...s, className: c.name }))
-    )
-  }, [classes])
+  const [students, setStudents] = useState([])
+  const [loadingStudents, setLoadingStudents] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen || mode !== 'list') return
+
+    async function fetchAllStudents() {
+      setLoadingStudents(true)
+      const token = localStorage.getItem('adapta_token')
+      try {
+        const response = await fetch('/api/students', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setStudents(data)
+        }
+      } catch (err) {
+        console.error('Erro ao buscar alunos da plataforma:', err)
+      } finally {
+        setLoadingStudents(false)
+      }
+    }
+
+    fetchAllStudents()
+  }, [isOpen, mode])
 
   const filteredStudents = useMemo(() => {
-    if (!search.trim()) return allStudents
+    if (!search.trim()) return students
     const query = search.toLowerCase()
-    return allStudents.filter(s => 
+    return students.filter(s => 
       s.name.toLowerCase().includes(query) || 
       (s.email && s.email.toLowerCase().includes(query))
     )
-  }, [search, allStudents])
+  }, [search, students])
 
   if (!isOpen) return null
 
@@ -113,7 +133,12 @@ export default function ShareModal({ isOpen, onClose, materialName }) {
                   </div>
 
                   <div className="student-list-container">
-                    {filteredStudents.length > 0 ? (
+                    {loadingStudents ? (
+                      <div className="empty-students">
+                        <span className="spinner" style={{ borderColor: 'var(--color-primary-subtle)', borderTopColor: 'var(--color-primary)' }} />
+                        <p style={{ marginTop: 'var(--space-2)' }}>Buscando alunos registrados...</p>
+                      </div>
+                    ) : filteredStudents.length > 0 ? (
                       <ul className="student-share-list">
                         {filteredStudents.map(student => {
                           const condInfo = CONDITION_INFO[student.condition]
@@ -129,7 +154,7 @@ export default function ShareModal({ isOpen, onClose, materialName }) {
                               </div>
                               <div className="student-share-info">
                                 <strong className="student-share-name">{student.name}</strong>
-                                <span className="student-share-class">{student.className}</span>
+                                <span className="student-share-class">{student.email || 'Aluno Registrado'}</span>
                               </div>
                               {condInfo && (
                                 <div className="student-share-tag" style={{ color: condInfo.color, backgroundColor: `${condInfo.color}15` }}>
