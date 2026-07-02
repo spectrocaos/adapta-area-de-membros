@@ -105,7 +105,7 @@ export default function StudentOnboardingPage() {
     }
   }
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     // 1. Atualizar preferências visuais/de sistema no hook
     updateMultiplePreferences({
       theme: answers.colorFilter === 'high-contrast' ? 'high-contrast' : 'light',
@@ -115,8 +115,8 @@ export default function StudentOnboardingPage() {
       colorFilter: answers.colorFilter,
     })
 
-    // 2. Salvar estado de onboarded do aluno
-    updateUser({
+    // 2. Salvar estado de onboarded do aluno e aguardar a conclusão
+    await updateUser({
       condition: answers.condition !== 'none' ? answers.condition : null,
       onboarded: true
     })
