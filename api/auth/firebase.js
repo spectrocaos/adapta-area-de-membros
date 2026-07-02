@@ -37,7 +37,7 @@ export default async function handler(req, res) {
           profile: profile || 'student', // Default
           condition: condition || null,
           photoUrl: photoUrl || null,
-          onboarded: false,
+          onboarded: true, // Default to true to skip onboarding completely
         }
       })
     } else if (user.id !== uid) {

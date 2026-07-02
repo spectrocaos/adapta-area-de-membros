@@ -44,16 +44,6 @@ function ProtectedRoute({ children, requireProfile }) {
 
   if (!isAuthenticated) return <Navigate to="/login" replace />
 
-  // Se o aluno não fez onboarding, obriga a fazer
-  if (user?.profile === 'student' && !user?.onboarded && location.pathname !== '/onboarding') {
-    return <Navigate to="/onboarding" replace />
-  }
-
-  // Se já fez onboarding e está na rota de onboarding, manda pro dashboard
-  if (user?.profile === 'student' && user?.onboarded && location.pathname === '/onboarding') {
-    return <Navigate to="/dashboard" replace />
-  }
-
   if (requireProfile) {
     const profiles = Array.isArray(requireProfile) ? requireProfile : [requireProfile]
     if (!profiles.includes(user.profile)) {

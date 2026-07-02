@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         passwordHash: hashedPassword,
         profile,
         condition: condition || null,
-        onboarded: false,
+        onboarded: true,
       }
     })
 
