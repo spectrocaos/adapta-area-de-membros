@@ -1,8 +1,25 @@
 import { useState, useRef } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { usePreferences } from '../../hooks/usePreferences'
-import { LogOut, Monitor, Type, AlignLeft, EarOff, Pencil, Camera, X, Check } from 'lucide-react'
+import { LogOut, Monitor, Type, AlignLeft, EarOff, Pencil, Camera, X, Check, Loader } from 'lucide-react'
 import './StudentProfilePage.css'
+
+// Comprime a imagem usando Canvas para manter tamanho < 500KB
+function compressImage(dataUrl, maxWidth = 400, quality = 0.75) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      const scale = Math.min(1, maxWidth / img.width)
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width * scale
+      canvas.height = img.height * scale
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      resolve(canvas.toDataURL('image/jpeg', quality))
+    }
+    img.src = dataUrl
+  })
+}
 
 export default function StudentProfilePage() {
   const { user, logout, updateUser } = useAuth()
@@ -12,30 +29,42 @@ export default function StudentProfilePage() {
   const [editName, setEditName]   = useState(user?.name || '')
   const [editPhoto, setEditPhoto] = useState(user?.photoUrl || null)
   const [previewPhoto, setPreviewPhoto] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const fileInputRef = useRef(null)
 
   const handleOpenEdit = () => {
     setEditName(user?.name || '')
     setEditPhoto(user?.photoUrl || null)
     setPreviewPhoto(null)
+    setSaveError('')
     setIsEditModalOpen(true)
   }
 
-  const handlePhotoChange = (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = (ev) => {
-      setPreviewPhoto(ev.target.result)
+    reader.onload = async (ev) => {
+      // Comprime antes de guardar no estado
+      const compressed = await compressImage(ev.target.result)
+      setPreviewPhoto(compressed)
     }
     reader.readAsDataURL(file)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setSaving(true)
+    setSaveError('')
     const updates = { name: editName.trim() || user?.name }
     if (previewPhoto) updates.photoUrl = previewPhoto
-    updateUser(updates)
-    setIsEditModalOpen(false)
+    const result = await updateUser(updates)
+    setSaving(false)
+    if (result?.success) {
+      setIsEditModalOpen(false)
+    } else {
+      setSaveError(result?.error || 'Erro ao salvar. Tente novamente.')
+    }
   }
 
   const handleRemovePhoto = () => {
@@ -243,11 +272,19 @@ export default function StudentProfilePage() {
               </div>
 
               <div className="modal-actions">
-                <button type="button" className="btn-outline" onClick={() => setIsEditModalOpen(false)}>
+                {saveError && (
+                  <p style={{ color: 'var(--color-error, #e53e3e)', fontSize: 'var(--text-sm)', margin: '0 0 8px', textAlign: 'center', width: '100%' }}>
+                    {saveError}
+                  </p>
+                )}
+                <button type="button" className="btn-outline" onClick={() => setIsEditModalOpen(false)} disabled={saving}>
                   Cancelar
                 </button>
-                <button type="button" className="btn-primary" onClick={handleSave} disabled={!editName.trim()}>
-                  <Check size={16} /> Salvar alterações
+                <button type="button" className="btn-primary" onClick={handleSave} disabled={!editName.trim() || saving}>
+                  {saving
+                    ? <><Loader size={16} style={{ animation: 'spin 1s linear infinite' }} /> Salvando...</>
+                    : <><Check size={16} /> Salvar alterações</>
+                  }
                 </button>
               </div>
             </div>
